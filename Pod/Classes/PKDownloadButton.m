@@ -75,6 +75,10 @@ static PKDownloadButton *CommonInit(PKDownloadButton *self) {
             NSAssert(NO, @"unsupported state");
             break;
     }
+    
+    [self removeConstraints:self.constraints];
+    [self addConstraints:[self createConstraints]];
+    [self setNeedsLayout];
 }
 
 #pragma mark - Initialization
@@ -206,11 +210,22 @@ static PKDownloadButton *CommonInit(PKDownloadButton *self) {
 - (NSArray *)createConstraints {
     NSMutableArray *constraints = [NSMutableArray array];
     
-    [self.stateViews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        SafeObjClassCast(UIView, view, obj);
-        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsForWrappedSubview:view
-                                                                               withInsets:UIEdgeInsetsZero]];
-    }];
+    switch (_state) {
+        case kPKDownloadButtonState_StartDownload:
+            [constraints addObjectsFromArray:[NSLayoutConstraint constraintsForWrappedSubview: self.startDownloadButton withInsets: UIEdgeInsetsZero]];
+            break;
+        case kPKDownloadButtonState_Pending:
+            [constraints addObjectsFromArray:[NSLayoutConstraint constraintsForWrappedSubview: self.pendingView withInsets: UIEdgeInsetsZero]];
+            break;
+        case kPKDownloadButtonState_Downloading:
+            [constraints addObjectsFromArray:[NSLayoutConstraint constraintsForWrappedSubview: self.stopDownloadButton withInsets: UIEdgeInsetsZero]];
+            break;
+        case kPKDownloadButtonState_Downloaded:
+            [constraints addObjectsFromArray:[NSLayoutConstraint constraintsForWrappedSubview: self.downloadedButton withInsets: UIEdgeInsetsZero]];
+            break;
+        default:
+            NSAssert(NO, @"unsupported state");
+    }
     
     return constraints;
 }

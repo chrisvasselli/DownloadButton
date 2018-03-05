@@ -46,4 +46,10 @@
     [self setAttributedTitle:nil forState:UIControlStateHighlighted];
 }
 
+- (CGSize)intrinsicContentSize
+{
+    CGSize superIntrinsicSize = [super intrinsicContentSize];
+    return CGSizeMake(superIntrinsicSize.width + 10, superIntrinsicSize.height + 10);
+}
+
 @end
