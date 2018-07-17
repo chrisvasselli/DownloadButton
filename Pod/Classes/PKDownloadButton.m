@@ -40,6 +40,7 @@ static PKDownloadButton *CommonInit(PKDownloadButton *self) {
         
         self.state = kPKDownloadButtonState_StartDownload;
         self.backgroundColor = [UIColor clearColor];
+        self.accessibilityTraits = UIAccessibilityTraitButton;
     }
     return self;
 }
@@ -59,17 +60,21 @@ static PKDownloadButton *CommonInit(PKDownloadButton *self) {
     switch (state) {
         case kPKDownloadButtonState_StartDownload:
             self.startDownloadButton.hidden = NO;
+            self.accessibilityLabel = @"Start Download";
             break;
         case kPKDownloadButtonState_Pending:
             self.pendingView.hidden = NO;
             [self.pendingView startSpin];
+            self.accessibilityLabel = @"Pending Download";
             break;
         case kPKDownloadButtonState_Downloading:
             self.stopDownloadButton.hidden = NO;
             self.stopDownloadButton.progress = 0.f;
+            self.accessibilityLabel = @"Downloading";
             break;
         case kPKDownloadButtonState_Downloaded:
             self.downloadedButton.hidden = NO;
+            self.accessibilityLabel = @"Downloaded";
             break;
         default:
             NSAssert(NO, @"unsupported state");
@@ -228,6 +233,10 @@ static PKDownloadButton *CommonInit(PKDownloadButton *self) {
     }
     
     return constraints;
+}
+
+- (BOOL)isAccessibilityElement {
+    return YES;
 }
 
 @end
